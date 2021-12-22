@@ -1,3 +1,5 @@
+import json
+
 from django import forms
 from django.contrib.admin.widgets import AdminSplitDateTime
 from django.utils.dateparse import parse_datetime
@@ -50,7 +52,7 @@ class DynamicArrayTextareaWidget(DynamicArrayWidget):
         super().__init__(*args, **kwargs)
 
 class DatetimeWidget(DynamicArrayWidget):
-    """Datetime widget for array datetime lists"""
+    """Widget for array datetime lists"""
 
     def __init__(self, *args, **kwargs):
         kwargs['subwidget_form'] = AdminSplitDateTime
@@ -69,3 +71,9 @@ class DatetimeWidget(DynamicArrayWidget):
             return return_data
         except AttributeError:
             return data.get(name)
+
+class JSONWidget(DynamicArrayWidget):
+    """Widget for array JSON lists"""
+
+    def format_value(self, value):
+        return [data if isinstance(data, str) else json.dumps(data) for data in value] or []
